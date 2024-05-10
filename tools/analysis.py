@@ -1,4 +1,10 @@
 #!/usr/bin/python2.7 -u
+import os, sys
+PROJECT_DIR = os.path.join(os.path.dirname(__file__), '..')
+sys.path.append(PROJECT_DIR)
+sys.path.append(os.path.join(PROJECT_DIR, 'bots'))
+sys.path.append(os.path.join(PROJECT_DIR, 'bots/1'))
+
 import itertools
 import multiprocessing
 
@@ -9,7 +15,7 @@ from sceptic import ScepticBot
 
 
 def main(arg):
-    print '.',
+    print('.',)
     res, spy = arg
     RandomCheater.cheat_SetRate(float(res) / 10.0, float(spy) / 10.0)
 
@@ -31,14 +37,16 @@ if __name__ == '__main__':
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
 
-    print "Measuring performance of Resistance AI (SkepticBot) against bots of exact skill."
-    print " - 10 total skill levels for spy and resistance."
-    print " - 121 jobs run in total, for 250 games each."
-    print " - Using %i threads to run the evaluations...\n" % multiprocessing.cpu_count()
+    print("Measuring performance of Resistance AI (SkepticBot) against bots of exact skill.")
+    print(" - 10 total skill levels for spy and resistance.")
+    print(" - 121 jobs run in total, for 250 games each.")
+    print(" - Using %i threads to run the evaluations...\n" % multiprocessing.cpu_count())
 
     pool = multiprocessing.Pool(processes=multiprocessing.cpu_count())
     results = {}
-    for i, t in pool.map(main, itertools.product(range(11), range(11))):
+    # for i, t in pool.map(main, itertools.product(range(11), range(11))):
+    for x, y in itertools.product(range(11), range(11)):
+        i, t = main((x, y))
         results[i] = float(t)
 
     X, Y = np.meshgrid(range(11), range(11))
@@ -53,6 +61,5 @@ if __name__ == '__main__':
     ax.set_yticklabels(['s=%1.1f' % (float(i*2)/10.0) for i in range(6)])
     ax.set_zlabel('Improvement')
 
-    print "\n\nShowing performance graph of the evaluated bot relative to its opponents."
+    print("\n\nShowing performance graph of the evaluated bot relative to its opponents.")
     plt.show()
-
